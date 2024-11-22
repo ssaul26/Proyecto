@@ -45,6 +45,7 @@
         <!-- Nueva actividad para mostrar resultados del psicólogo -->
         <activity android:name=".ResultadoPsicologoActivity" android:exported="true" />
 
+        <!-- Actividad del Directorio -->
+        <activity android:name=".DirectorioActivity" android:exported="true" />
     </application>
-
 </manifest>

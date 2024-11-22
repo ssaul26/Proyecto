@@ -70,6 +70,18 @@
             android:layout_marginBottom="16dp"
             android:visibility="gone" />
 
+        <!-- Botón Directorio -->
+        <Button
+            android:id="@+id/btnDirectorio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Directorio"
+            android:textSize="18sp"
+            android:backgroundTint="@color/azulbotones"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="16dp" />
+
+
         <!-- Botón "Cerrar sesión" -->
         <Button
             android:id="@+id/btnCerrarSesion"
@@ -79,5 +91,8 @@
             android:textSize="18sp"
             android:backgroundTint="@color/green"
             android:textColor="@android:color/white" />
+
+
+
     </LinearLayout>
 </LinearLayout>
