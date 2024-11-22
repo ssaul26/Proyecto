@@ -1,3 +1,48 @@
 <resources>
     <string name="app_name">Proyecto</string>
+    <string-array name="opciones_estudios">
+        <item>Licenciatura</item>
+        <item>Maestría</item>
+        <item>Doctorado</item>
+        <item>Estudios de Posgrado</item>
+    </string-array>
+    <string-array name="opciones_especialidad">
+        <item>Clínica</item>
+
+        <item>Deportiva</item>
+
+        <item>Adicciones</item>
+        <item>Educativa</item>
+        <item>Infantil</item>
+        <item>Familiar</item>
+    </string-array>
+    <string-array name="opciones_diagnostico">
+        <item>Seleccione un diagnóstico</item>
+        <item>Trauma/Depresión/Ansiedad</item>
+        <item>Estrés Deportivo/Rehabilitación Emocional tras Lesión/Trabajo en Equipo</item>
+        <item>Ludopatía/Alcoholismo/Drogadicción</item>
+        <item>Problemas de Aprendizaje/Orientación Vocacional/Intervención en Disciplina</item>
+        <item>Trastorno del Desarrollo/Problemas de Conducta/Manejo del Bullying</item>
+        <item>Conflicto de Pareja/Terapia Sexual/Dificultad en la Dinámica Familiar/Problema de Comunicación en Pareja o Familia</item>
+    </string-array>
+
+    <string-array name="opciones_ubicacion">
+        <item>Azcapotzalco</item>
+        <item>Coyoacán</item>
+        <item>Cuajimalpa de Morelos</item>
+        <item>Gustavo A. Madero</item>
+        <item>Iztacalco</item>
+        <item>Iztapalapa</item>
+        <item>La Magdalena Contreras</item>
+        <item>Milpa Alta</item>
+        <item>Álvaro Obregón</item>
+        <item>Tláhuac</item>
+        <item>Tlalpan</item>
+        <item>Xochimilco</item>
+        <item>Benito Juárez</item>
+        <item>Cuauhtémoc</item>
+        <item>Miguel Hidalgo</item>
+        <item>Venustiano Carranza</item>
+    </string-array>
+
 </resources>

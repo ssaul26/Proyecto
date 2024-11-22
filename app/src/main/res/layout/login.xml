@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:background="@drawable/background"
     android:gravity="center"
     android:orientation="vertical"
@@ -25,19 +24,16 @@
             android:layout_gravity="center_horizontal"
             android:padding="20dp">
 
-
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Inicio de Sesión "
+                android:text="Inicio de Sesión"
                 android:textAlignment="center"
                 android:textColor="@color/green"
                 android:textSize="34sp" />
 
-
             <EditText
-
                 android:id="@+id/txtUsuario"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -71,39 +67,35 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/green"
-                android:text="Iniciar sesión "
+                android:text="Iniciar sesión"
                 android:textSize="20sp"
                 app:cornerRadius="20dp" />
 
-
         </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
 
-</androidx.cardview.widget.CardView>
-
+    <!-- Texto "¿Aún no estás registrado?" -->
     <TextView
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="¿Aún no estas registrado?"
+        android:text="¿Aún no estás registrado?"
         android:textAlignment="center"
         android:textColor="@color/navy"
         android:textSize="18dp" />
 
+    <!-- Texto "Regístrate" con ID para el evento de clic -->
     <TextView
-
         android:id="@+id/lblRegistrar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-2dp"
-        android:text="Registrate"
+        android:text="Regístrate"
         android:textAlignment="center"
         android:textColor="@color/navy"
         android:textSize="19dp"
-        android:textStyle="bold" />
-
-
-
-
+        android:textStyle="bold"
+        android:clickable="true"
+        android:focusable="true" />
 
 </LinearLayout>

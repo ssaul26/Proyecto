@@ -14,21 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proyecto"
         tools:targetApi="31">
-        <activity
-            android:name=".RegistrarActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true">
+
+
+        <activity android:name=".RegistrarActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
+        <activity android:name=".LoginActivity" android:exported="true" />
+        <activity android:name=".ResultadoActivity" android:exported="false" />
+
+        <activity android:name=".BienvenidaActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".PacienteActivity" android:exported="false" />
+        <activity android:name=".PsicologoActivity" android:exported="false" />
     </application>
 
 </manifest>
+
