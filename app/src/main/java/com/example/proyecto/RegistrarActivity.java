@@ -17,7 +17,7 @@ import java.util.Map;
 public class RegistrarActivity extends AppCompatActivity {
 
     private EditText editTextNombre, editTextCorreo, editTextTelefono, editTextContrasena;
-    private Button btnRegistrar;
+    private Button btnRegistrar, btnVolver; // Agregado btnVolver
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -37,6 +37,7 @@ public class RegistrarActivity extends AppCompatActivity {
         editTextTelefono = findViewById(R.id.editTextTelefono);
         editTextContrasena = findViewById(R.id.editTextContrasena);
         btnRegistrar = findViewById(R.id.btnRegistrar);
+        btnVolver = findViewById(R.id.btnVolver); // Referencia del botón "Volver"
 
         // Acción del botón "Registrar"
         btnRegistrar.setOnClickListener(v -> {
@@ -78,6 +79,13 @@ public class RegistrarActivity extends AppCompatActivity {
                             Toast.makeText(this, "Error al registrar usuario: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+        });
+
+        // Acción del botón "Volver"
+        btnVolver.setOnClickListener(v -> {
+            Intent intent = new Intent(RegistrarActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }

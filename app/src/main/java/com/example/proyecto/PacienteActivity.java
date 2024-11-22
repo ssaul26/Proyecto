@@ -92,12 +92,12 @@ public class PacienteActivity extends AppCompatActivity {
                 formulario.put("diagnostico", diagnostico);
 
                 db.collection("usuarios").document(userId)
-                        .update("formulario", formulario)
+                        .update("formulario", formulario, "formularioCompletado", true)
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(this, "Formulario guardado exitosamente.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(PacienteActivity.this, ResultadoActivity.class);
                             intent.putExtra("diagnostico", diagnostico);
-                            intent.putExtra("nombre", nombre); // Pasar el nombre
+                            intent.putExtra("nombre", nombre);
                             startActivity(intent);
                             finish();
                         })
@@ -110,7 +110,6 @@ public class PacienteActivity extends AppCompatActivity {
         // Acción del botón Volver
         btnVolverPaciente.setOnClickListener(v -> {
             Intent intent = new Intent(PacienteActivity.this, BienvenidaActivity.class);
-            intent.putExtra("nombre", nombre); // Pasar el nombre
             startActivity(intent);
             finish();
         });

@@ -1,41 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:background="@drawable/background"
     android:padding="16dp">
 
+    <!-- Contenedor para el título -->
+    <TextView
+        android:id="@+id/textViewBienvenida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="3dp"
+        android:text="Bienvenido a MindEase"
+        android:textSize="35sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:gravity="center" />
 
-<TextView
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Bienvenido a MindEase"
-android:textSize="24sp"
-android:textColor="@color/white"
-android:textStyle="bold"
-android:layout_marginBottom="40dp"
-android:gravity="center" />
+    <!-- Contenedor para los botones centrales -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
 
+        <!-- Botón "Soy Paciente" -->
+        <Button
+            android:id="@+id/btnSoyPaciente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Soy Paciente"
+            android:textSize="18sp"
+            android:backgroundTint="@color/azulbotones"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="20dp" />
 
-<Button
-android:id="@+id/btnSoyPaciente"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:text="Soy Paciente"
-android:textSize="18sp"
-    android:backgroundTint="@color/azulbotones"
-    android:textColor="@android:color/white"
-    android:layout_marginBottom="20dp" />
-
-
-<Button
-android:id="@+id/btnSoyPsicologo"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:text="Soy Psicólogo"
-android:textSize="18sp"
-    android:backgroundTint="@color/azulbotones"
-android:textColor="@android:color/white" />
+        <!-- Botón "Soy Psicólogo" -->
+        <Button
+            android:id="@+id/btnSoyPsicologo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Soy Psicólogo"
+            android:textSize="18sp"
+            android:backgroundTint="@color/azulbotones"
+            android:textColor="@android:color/white" />
     </LinearLayout>
+
+    <!-- Contenedor inferior para el texto y el botón -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_marginBottom="20dp">
+
+        <!-- Mensaje dinámico para formulario contestado -->
+        <TextView
+            android:id="@+id/textViewFormularioEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Formulario contestado"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+
+        <!-- Botón "Cerrar sesión" -->
+        <Button
+            android:id="@+id/btnCerrarSesion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cerrar sesión"
+            android:textSize="18sp"
+            android:backgroundTint="@color/green"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</LinearLayout>

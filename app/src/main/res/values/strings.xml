@@ -2,6 +2,11 @@
     <string name="app_name">Proyecto</string>
     <string name="paciente">Paciente</string>
     <string name="psic_logo">Psicólogo</string>
+    <string name="bienvenido_a_mindease">Bienvenido a MindEase</string>
+    <string name="formulario_contestado">Formulario contestado</string>
+    <string name="soy_paciente">Soy Paciente</string>
+    <string name="soy_psic_logo">Soy Psicólogo</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
     <string-array name="opciones_estudios">
         <item>Licenciatura</item>
         <item>Maestría</item>
