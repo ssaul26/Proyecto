@@ -1,10 +1,7 @@
 package com.example.proyecto;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,116 +9,73 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.proyecto.Connection.ConnectionBD;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText usuario, clave;
-    TextView lblregistrar;
-    Button btningresar;
-    Connection con;
+    private EditText editTextCorreo, editTextContrasena;
+    private Button btnIniciarSesion;
+    private TextView lblRegistrar; // Agrega esta referencia
 
-    // Constructor para inicializar la conexión
-    public LoginActivity() {
-        ConnectionBD instanceConnection = new ConnectionBD();
-        con = instanceConnection.connect();
-    }
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        // Referenciar los elementos del layout
-        usuario = findViewById(R.id.txtUsuario);
-        clave = findViewById(R.id.txtContraseña);
-        lblregistrar = findViewById(R.id.lblRegistrar);
-        btningresar = findViewById(R.id.btnIngresar);
+        // Inicializar Firebase
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        // Listener para el botón "Iniciar sesión"
-        btningresar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new LoginActivity.login().execute();
-            }
+        // Referencias a los campos del layout
+        editTextCorreo = findViewById(R.id.txtUsuario);
+        editTextContrasena = findViewById(R.id.txtContraseña);
+        btnIniciarSesion = findViewById(R.id.btnIngresar);
+        lblRegistrar = findViewById(R.id.lblRegistrar); // Referencia al enlace "Regístrate"
+
+        // Acción para "Regístrate"
+        lblRegistrar.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegistrarActivity.class);
+            startActivity(intent); // Redirige a la pantalla de registro
         });
 
-        // Listener para el texto "Regístrate"
-        lblregistrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Iniciar la actividad de registro
-                Intent reg = new Intent(getApplicationContext(), RegistrarActivity.class);
-                startActivity(reg);
+        // Acción del botón "Iniciar sesión"
+        btnIniciarSesion.setOnClickListener(v -> {
+            String correo = editTextCorreo.getText().toString();
+            String contrasena = editTextContrasena.getText().toString();
+
+            // Validación de campos vacíos
+            if (correo.isEmpty() || contrasena.isEmpty()) {
+                Toast.makeText(this, "Por favor, completa los campos.", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            // Autenticar usuario con Firebase Authentication
+            mAuth.signInWithEmailAndPassword(correo, contrasena)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Obtener datos del usuario desde Firestore
+                            String userId = mAuth.getCurrentUser().getUid();
+                            db.collection("usuarios").document(userId).get()
+                                    .addOnSuccessListener(document -> {
+                                        if (document.exists()) {
+                                            String nombre = document.getString("nombre");
+                                            Intent intent = new Intent(LoginActivity.this, BienvenidaActivity.class);
+                                            intent.putExtra("nombre", nombre);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(this, "Usuario no encontrado en Firestore.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(this, "Error al obtener datos: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        } else {
+                            Toast.makeText(this, "Error al iniciar sesión: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
-    }
-
-    // Clase interna para manejar el inicio de sesión en segundo plano
-    public class login extends AsyncTask<String, String, String> {
-        String z = null;
-        Boolean exito = false;
-
-        @Override
-        protected String doInBackground(String... strings) {
-            if (con == null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(LoginActivity.this, "Verifique su conexión", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                z = "Sin conexión";
-            } else {
-                try {
-                    String sql = "SELECT * FROM USUARIO WHERE usuario = '" + usuario.getText() + "' AND CLAVE = '" + clave.getText() + "'";
-                    Statement stm = con.createStatement();
-                    ResultSet rs = stm.executeQuery(sql);
-
-                    if (rs.next()) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(LoginActivity.this, "Acceso exitoso", Toast.LENGTH_SHORT).show();
-                                Intent menu = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(menu);
-                            }
-                        });
-
-                        usuario.setText("");
-                        clave.setText("");
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(LoginActivity.this, "Error en el usuario o contraseña", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                        usuario.setText("");
-                        clave.setText("");
-                    }
-
-                } catch (Exception e) {
-                    exito = false;
-                    Log.e("Error de conexión", e.getMessage());
-                }
-            }
-            return z;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
     }
 }

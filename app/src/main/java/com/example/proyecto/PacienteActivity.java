@@ -13,6 +13,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class PacienteActivity extends AppCompatActivity {
 
     private Spinner spinnerUbicacion, spinnerDiagnostico;
@@ -20,12 +26,20 @@ public class PacienteActivity extends AppCompatActivity {
     private RadioButton radioSi, radioNo;
     private TextView textViewDiagnostico;
     private Button btnEnviarPaciente, btnVolverPaciente;
+
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
     private String nombre; // Variable para guardar el nombre
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paciente);
+
+        // Inicializar Firebase
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Recibir el nombre desde BienvenidaActivity
         nombre = getIntent().getStringExtra("nombre");
@@ -71,12 +85,25 @@ public class PacienteActivity extends AppCompatActivity {
             if (radioSi.isChecked() && (diagnostico.equals("Seleccione un diagnóstico") || diagnostico.isEmpty())) {
                 Toast.makeText(PacienteActivity.this, "Por favor, selecciona un diagnóstico.", Toast.LENGTH_SHORT).show();
             } else {
-                // Redirigir a ResultadoActivity y pasar el diagnóstico y el nombre
-                Intent intent = new Intent(PacienteActivity.this, ResultadoActivity.class);
-                intent.putExtra("diagnostico", diagnostico);
-                intent.putExtra("nombre", nombre); // Pasar el nombre
-                startActivity(intent);
-                finish();
+                // Guardar datos en Firestore
+                String userId = mAuth.getCurrentUser().getUid();
+                Map<String, Object> formulario = new HashMap<>();
+                formulario.put("ubicacion", ubicacion);
+                formulario.put("diagnostico", diagnostico);
+
+                db.collection("usuarios").document(userId)
+                        .update("formulario", formulario)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Formulario guardado exitosamente.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(PacienteActivity.this, ResultadoActivity.class);
+                            intent.putExtra("diagnostico", diagnostico);
+                            intent.putExtra("nombre", nombre); // Pasar el nombre
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(this, "Error al guardar los datos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
             }
         });
 

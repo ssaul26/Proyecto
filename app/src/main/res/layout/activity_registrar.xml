@@ -74,6 +74,36 @@
             android:textColor="@color/black"
             android:layout_marginBottom="16dp" />
 
+        <!-- Selector de Rol -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Selecciona tu rol:"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgRoles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/rbPaciente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/paciente"
+                android:layout_marginEnd="16dp" />
+
+            <RadioButton
+                android:id="@+id/rbPsicologo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/psic_logo" />
+        </RadioGroup>
+
         <!-- Botón Registrar -->
         <Button
             android:id="@+id/btnRegistrar"

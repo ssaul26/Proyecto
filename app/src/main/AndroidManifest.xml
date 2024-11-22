@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Permiso para usar Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -15,21 +16,35 @@
         android:theme="@style/Theme.Proyecto"
         tools:targetApi="31">
 
+        <!-- Actividad de Registro -->
+        <activity android:name=".RegistrarActivity" android:exported="true" />
 
-        <activity android:name=".RegistrarActivity" android:exported="false" />
-        <activity android:name=".MainActivity" android:exported="false" />
-        <activity android:name=".LoginActivity" android:exported="true" />
-        <activity android:name=".ResultadoActivity" android:exported="false" />
+        <!-- Actividad Principal -->
+        <activity android:name=".MainActivity" android:exported="true" />
 
-        <activity android:name=".BienvenidaActivity" android:exported="true">
+        <!-- Actividad de Inicio de Sesión -->
+        <activity android:name=".LoginActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PacienteActivity" android:exported="false" />
-        <activity android:name=".PsicologoActivity" android:exported="false" />
+
+        <!-- Actividad para mostrar resultados generales -->
+        <activity android:name=".ResultadoActivity" android:exported="false" />
+
+        <!-- Actividad de Bienvenida -->
+        <activity android:name=".BienvenidaActivity" android:exported="true" />
+
+        <!-- Actividad para el formulario del paciente -->
+        <activity android:name=".PacienteActivity" android:exported="true" />
+
+        <!-- Actividad para el formulario del psicólogo -->
+        <activity android:name=".PsicologoActivity" android:exported="true" />
+
+        <!-- Nueva actividad para mostrar resultados del psicólogo -->
+        <activity android:name=".ResultadoPsicologoActivity" android:exported="true" />
+
     </application>
 
 </manifest>
-

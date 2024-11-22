@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Proyecto</string>
+    <string name="paciente">Paciente</string>
+    <string name="psic_logo">Psicólogo</string>
     <string-array name="opciones_estudios">
         <item>Licenciatura</item>
         <item>Maestría</item>
