@@ -83,6 +83,10 @@ public class PsicologoActivity extends AppCompatActivity {
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(this, "Formulario guardado exitosamente.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(PsicologoActivity.this, ResultadoPsicologoActivity.class);
+                            intent.putExtra("cedula", cedula);
+                            intent.putExtra("estudios", estudios);
+                            intent.putExtra("especialidad", especialidad);
+                            intent.putExtra("ubicacion", ubicacion);
                             startActivity(intent);
                             finish();
                         })

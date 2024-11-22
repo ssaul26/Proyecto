@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +19,8 @@ import java.util.Map;
 public class RegistrarActivity extends AppCompatActivity {
 
     private EditText editTextNombre, editTextCorreo, editTextTelefono, editTextContrasena;
-    private Button btnRegistrar, btnVolver; // Agregado btnVolver
+    private RadioGroup rgRoles;
+    private Button btnRegistrar;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -36,8 +39,8 @@ public class RegistrarActivity extends AppCompatActivity {
         editTextCorreo = findViewById(R.id.editTextCorreo);
         editTextTelefono = findViewById(R.id.editTextTelefono);
         editTextContrasena = findViewById(R.id.editTextContrasena);
+        rgRoles = findViewById(R.id.rgRoles);
         btnRegistrar = findViewById(R.id.btnRegistrar);
-        btnVolver = findViewById(R.id.btnVolver); // Referencia del botón "Volver"
 
         // Acción del botón "Registrar"
         btnRegistrar.setOnClickListener(v -> {
@@ -47,10 +50,18 @@ public class RegistrarActivity extends AppCompatActivity {
             String contrasena = editTextContrasena.getText().toString().trim();
 
             // Validación de campos
-            if (nombre.isEmpty() || correo.isEmpty() || telefono.isEmpty() || contrasena.isEmpty()) {
-                Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show();
+            if (!validarCampos(nombre, correo, telefono, contrasena)) {
+                return; // Si la validación falla, no se procede
+            }
+
+            // Determinar el rol seleccionado
+            int selectedRoleId = rgRoles.getCheckedRadioButtonId();
+            if (selectedRoleId == -1) {
+                Toast.makeText(this, "Por favor, selecciona un rol.", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            String rol = ((RadioButton) findViewById(selectedRoleId)).getText().toString().toLowerCase();
 
             // Registrar usuario en Firebase Authentication
             mAuth.createUserWithEmailAndPassword(correo, contrasena)
@@ -63,12 +74,13 @@ public class RegistrarActivity extends AppCompatActivity {
                             userData.put("nombre", nombre);
                             userData.put("correo", correo);
                             userData.put("telefono", telefono);
+                            userData.put("rol", rol);
+                            userData.put("formularioCompletado", false); // Indica si el formulario ha sido completado
 
                             db.collection("usuarios").document(userId).set(userData)
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(this, "Registro exitoso.", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(RegistrarActivity.this, BienvenidaActivity.class);
-                                        intent.putExtra("nombre", nombre);
+                                        Intent intent = new Intent(RegistrarActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
                                     })
@@ -80,12 +92,41 @@ public class RegistrarActivity extends AppCompatActivity {
                         }
                     });
         });
+    }
 
-        // Acción del botón "Volver"
-        btnVolver.setOnClickListener(v -> {
-            Intent intent = new Intent(RegistrarActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        });
+    // Método para validar los campos
+    private boolean validarCampos(String nombre, String correo, String telefono, String contrasena) {
+        if (nombre.isEmpty()) {
+            Toast.makeText(this, "Por favor, completa el campo de nombre.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!isValidEmail(correo)) {
+            Toast.makeText(this, "El correo debe ser válido y terminar en .com, .com.mx o .net.mx.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!isValidPhone(telefono)) {
+            Toast.makeText(this, "Verifique el campo de número (10 dígitos).", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (contrasena.isEmpty() || contrasena.length() < 6) {
+            Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true; // Si todo es válido, retornamos true
+    }
+
+    // Validar correo electrónico con dominios específicos
+    private boolean isValidEmail(String email) {
+        String emailPattern = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.(com|com\\.mx|net\\.mx)$";
+        return email.matches(emailPattern);
+    }
+
+    // Validar número de teléfono (10 dígitos)
+    private boolean isValidPhone(String phone) {
+        return phone.matches("^\\d{10}$");
     }
 }
