@@ -1,64 +1,42 @@
-package com.example.proyecto;
+package com.example.proyecto
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.proyecto.DirectorioAdapter.DoctorViewHolder
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
-
-import java.util.List;
-
-public class DirectorioAdapter extends RecyclerView.Adapter<DirectorioAdapter.DoctorViewHolder> {
-
-    private Context context;
-    private List<Doctor> doctorList;
-
-    public DirectorioAdapter(Context context, List<Doctor> doctorList) {
-        this.context = context;
-        this.doctorList = doctorList;
+class DirectorioAdapter(private val context: Context, private val doctorList: List<Doctor>) :
+    RecyclerView.Adapter<DoctorViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DoctorViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.item_doctor, parent, false)
+        return DoctorViewHolder(view)
     }
 
-    @NonNull
-    @Override
-    public DoctorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_doctor, parent, false);
-        return new DoctorViewHolder(view);
-    }
+    override fun onBindViewHolder(holder: DoctorViewHolder, position: Int) {
+        val doctor = doctorList[position]
 
-    @Override
-    public void onBindViewHolder(@NonNull DoctorViewHolder holder, int position) {
-        Doctor doctor = doctorList.get(position);
-
-        holder.textViewNombre.setText(doctor.getNombre());
-        holder.textViewEspecialidad.setText(doctor.getEspecialidad());
-        holder.textViewUbicacion.setText(doctor.getUbicacion());
+        holder.textViewNombre.text = doctor.nombre
+        holder.textViewEspecialidad.text = doctor.especialidad
+        holder.textViewUbicacion.text = doctor.ubicacion
 
         Glide.with(context)
-                .load(doctor.getImagen())
-                .into(holder.imageViewDoctor);
+            .load(doctor.imagen)
+            .into(holder.imageViewDoctor)
     }
 
-    @Override
-    public int getItemCount() {
-        return doctorList.size();
+    override fun getItemCount(): Int {
+        return doctorList.size
     }
 
-    public static class DoctorViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewNombre, textViewEspecialidad, textViewUbicacion;
-        ImageView imageViewDoctor;
-
-        public DoctorViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textViewNombre = itemView.findViewById(R.id.textViewNombre);
-            textViewEspecialidad = itemView.findViewById(R.id.textViewEspecialidad);
-            textViewUbicacion = itemView.findViewById(R.id.textViewUbicacion);
-            imageViewDoctor = itemView.findViewById(R.id.imageViewDoctor);
-        }
+    class DoctorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var textViewNombre: TextView = itemView.findViewById(R.id.textViewNombre)
+        var textViewEspecialidad: TextView = itemView.findViewById(R.id.textViewEspecialidad)
+        var textViewUbicacion: TextView = itemView.findViewById(R.id.textViewUbicacion)
+        var imageViewDoctor: ImageView = itemView.findViewById(R.id.imageViewDoctor)
     }
 }

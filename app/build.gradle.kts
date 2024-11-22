@@ -1,16 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
     namespace = "com.example.proyecto"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.proyecto"
         minSdk = 27
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -26,11 +27,17 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
+
 
 dependencies {
 
@@ -40,6 +47,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(files("libs\\jtds-1.3.1.jar"))
     implementation(libs.cronet.embedded)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

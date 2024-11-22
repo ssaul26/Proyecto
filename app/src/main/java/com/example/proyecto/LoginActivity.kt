@@ -1,81 +1,101 @@
-package com.example.proyecto;
+package com.example.proyecto
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 
-import androidx.appcompat.app.AppCompatActivity;
+class LoginActivity : AppCompatActivity() {
+    private lateinit var editTextCorreo: EditText
+    private lateinit var editTextContrasena: EditText
+    private lateinit var btnIniciarSesion: Button
+    private lateinit var lblRegistrar: TextView
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
-public class LoginActivity extends AppCompatActivity {
-
-    private EditText editTextCorreo, editTextContrasena;
-    private Button btnIniciarSesion;
-    private TextView lblRegistrar; // Agrega esta referencia
-
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.login)
 
         // Inicializar Firebase
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         // Referencias a los campos del layout
-        editTextCorreo = findViewById(R.id.txtUsuario);
-        editTextContrasena = findViewById(R.id.txtContraseña);
-        btnIniciarSesion = findViewById(R.id.btnIngresar);
-        lblRegistrar = findViewById(R.id.lblRegistrar); // Referencia al enlace "Regístrate"
+        editTextCorreo = findViewById(R.id.txtUsuario)
+        editTextContrasena = findViewById(R.id.txtContraseña)
+        btnIniciarSesion = findViewById(R.id.btnIngresar)
+        lblRegistrar = findViewById(R.id.lblRegistrar)
 
         // Acción para "Regístrate"
-        lblRegistrar.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegistrarActivity.class);
-            startActivity(intent); // Redirige a la pantalla de registro
-        });
+        lblRegistrar.setOnClickListener {
+            val intent = Intent(this, RegistrarActivity::class.java)
+            startActivity(intent)
+        }
 
         // Acción del botón "Iniciar sesión"
-        btnIniciarSesion.setOnClickListener(v -> {
-            String correo = editTextCorreo.getText().toString();
-            String contrasena = editTextContrasena.getText().toString();
+        btnIniciarSesion.setOnClickListener {
+            val correo = editTextCorreo.text.toString()
+            val contrasena = editTextContrasena.text.toString()
 
             // Validación de campos vacíos
             if (correo.isEmpty() || contrasena.isEmpty()) {
-                Toast.makeText(this, "Por favor, completa los campos.", Toast.LENGTH_SHORT).show();
-                return;
+                Toast.makeText(this, "Por favor, completa los campos.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
             // Autenticar usuario con Firebase Authentication
             mAuth.signInWithEmailAndPassword(correo, contrasena)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val userId = mAuth.currentUser?.uid
+                        if (userId != null) {
                             // Obtener datos del usuario desde Firestore
-                            String userId = mAuth.getCurrentUser().getUid();
                             db.collection("usuarios").document(userId).get()
-                                    .addOnSuccessListener(document -> {
-                                        if (document.exists()) {
-                                            String nombre = document.getString("nombre");
-                                            Intent intent = new Intent(LoginActivity.this, BienvenidaActivity.class);
-                                            intent.putExtra("nombre", nombre);
-                                            startActivity(intent);
-                                            finish();
-                                        } else {
-                                            Toast.makeText(this, "Usuario no encontrado en Firestore.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    })
-                                    .addOnFailureListener(e -> Toast.makeText(this, "Error al obtener datos: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                                .addOnSuccessListener { document: DocumentSnapshot ->
+                                    if (document.exists()) {
+                                        val nombre = document.getString("nombre")
+                                        val intent = Intent(this, BienvenidaActivity::class.java)
+                                        intent.putExtra("nombre", nombre)
+                                        startActivity(intent)
+                                        finish()
+                                    } else {
+                                        Toast.makeText(
+                                            this,
+                                            "Usuario no encontrado en Firestore.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(
+                                        this,
+                                        "Error al obtener datos: ${e.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                         } else {
-                            Toast.makeText(this, "Error al iniciar sesión: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(
+                                this,
+                                "Error: no se pudo obtener el ID del usuario.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    });
-        });
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Error al iniciar sesión: ${task.exception?.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+        }
     }
 }

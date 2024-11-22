@@ -1,117 +1,133 @@
-package com.example.proyecto;
+package com.example.proyecto
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-import androidx.appcompat.app.AppCompatActivity;
+class PacienteActivity : AppCompatActivity() {
+    private lateinit var spinnerUbicacion: Spinner
+    private lateinit var spinnerDiagnostico: Spinner
+    private lateinit var radioGroupDiagnostico: RadioGroup
+    private lateinit var radioSi: RadioButton
+    private lateinit var radioNo: RadioButton
+    private lateinit var textViewDiagnostico: TextView
+    private lateinit var btnEnviarPaciente: Button
+    private lateinit var btnVolverPaciente: Button
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
-import java.util.HashMap;
-import java.util.Map;
+    private var nombre: String? = null // Variable para guardar el nombre
 
-public class PacienteActivity extends AppCompatActivity {
-
-    private Spinner spinnerUbicacion, spinnerDiagnostico;
-    private RadioGroup radioGroupDiagnostico;
-    private RadioButton radioSi, radioNo;
-    private TextView textViewDiagnostico;
-    private Button btnEnviarPaciente, btnVolverPaciente;
-
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
-
-    private String nombre; // Variable para guardar el nombre
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_paciente);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_paciente)
 
         // Inicializar Firebase
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         // Recibir el nombre desde BienvenidaActivity
-        nombre = getIntent().getStringExtra("nombre");
+        nombre = intent.getStringExtra("nombre")
 
         // Referencias a los elementos
-        spinnerUbicacion = findViewById(R.id.spinnerUbicacion);
-        spinnerDiagnostico = findViewById(R.id.spinnerDiagnostico);
-        radioGroupDiagnostico = findViewById(R.id.radioGroupDiagnostico);
-        radioSi = findViewById(R.id.radioSi);
-        radioNo = findViewById(R.id.radioNo);
-        textViewDiagnostico = findViewById(R.id.textViewDiagnostico);
-        btnEnviarPaciente = findViewById(R.id.btnEnviarPaciente);
-        btnVolverPaciente = findViewById(R.id.btnVolverPaciente);
+        spinnerUbicacion = findViewById(R.id.spinnerUbicacion)
+        spinnerDiagnostico = findViewById(R.id.spinnerDiagnostico)
+        radioGroupDiagnostico = findViewById(R.id.radioGroupDiagnostico)
+        radioSi = findViewById(R.id.radioSi)
+        radioNo = findViewById(R.id.radioNo)
+        textViewDiagnostico = findViewById(R.id.textViewDiagnostico)
+        btnEnviarPaciente = findViewById(R.id.btnEnviarPaciente)
+        btnVolverPaciente = findViewById(R.id.btnVolverPaciente)
 
         // Configurar Spinner de ubicación
-        ArrayAdapter<CharSequence> adapterUbicacion = ArrayAdapter.createFromResource(this,
-                R.array.opciones_ubicacion, android.R.layout.simple_spinner_item);
-        adapterUbicacion.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerUbicacion.setAdapter(adapterUbicacion);
+        val adapterUbicacion = ArrayAdapter.createFromResource(
+            this,
+            R.array.opciones_ubicacion, android.R.layout.simple_spinner_item
+        )
+        adapterUbicacion.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerUbicacion.adapter = adapterUbicacion
 
         // Configurar Spinner de diagnóstico
-        ArrayAdapter<CharSequence> adapterDiagnostico = ArrayAdapter.createFromResource(this,
-                R.array.opciones_diagnostico, android.R.layout.simple_spinner_item);
-        adapterDiagnostico.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerDiagnostico.setAdapter(adapterDiagnostico);
+        val adapterDiagnostico = ArrayAdapter.createFromResource(
+            this,
+            R.array.opciones_diagnostico, android.R.layout.simple_spinner_item
+        )
+        adapterDiagnostico.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerDiagnostico.adapter = adapterDiagnostico
 
         // Mostrar u ocultar Spinner de diagnóstico según la selección
-        radioGroupDiagnostico.setOnCheckedChangeListener((group, checkedId) -> {
+        radioGroupDiagnostico.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.radioSi) {
-                textViewDiagnostico.setVisibility(View.VISIBLE);
-                spinnerDiagnostico.setVisibility(View.VISIBLE);
+                textViewDiagnostico.visibility = View.VISIBLE
+                spinnerDiagnostico.visibility = View.VISIBLE
             } else if (checkedId == R.id.radioNo) {
-                textViewDiagnostico.setVisibility(View.GONE);
-                spinnerDiagnostico.setVisibility(View.GONE);
+                textViewDiagnostico.visibility = View.GONE
+                spinnerDiagnostico.visibility = View.GONE
             }
-        });
+        }
 
         // Acción del botón Enviar
-        btnEnviarPaciente.setOnClickListener(v -> {
-            String ubicacion = spinnerUbicacion.getSelectedItem().toString();
-            String diagnostico = radioSi.isChecked() ? spinnerDiagnostico.getSelectedItem().toString() : "No diagnosticado";
+        btnEnviarPaciente.setOnClickListener {
+            val ubicacion = spinnerUbicacion.selectedItem.toString()
+            val diagnostico = if (radioSi.isChecked) spinnerDiagnostico.selectedItem.toString() else "No diagnosticado"
 
-            if (radioSi.isChecked() && (diagnostico.equals("Seleccione un diagnóstico") || diagnostico.isEmpty())) {
-                Toast.makeText(PacienteActivity.this, "Por favor, selecciona un diagnóstico.", Toast.LENGTH_SHORT).show();
+            if (radioSi.isChecked && (diagnostico == "Seleccione un diagnóstico" || diagnostico.isEmpty())) {
+                Toast.makeText(
+                    this,
+                    "Por favor, selecciona un diagnóstico.",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 // Guardar datos en Firestore
-                String userId = mAuth.getCurrentUser().getUid();
-                Map<String, Object> formulario = new HashMap<>();
-                formulario.put("ubicacion", ubicacion);
-                formulario.put("diagnostico", diagnostico);
+                val userId = mAuth.currentUser?.uid
+                if (userId != null) {
+                    val formulario = hashMapOf(
+                        "ubicacion" to ubicacion,
+                        "diagnostico" to diagnostico
+                    )
 
-                db.collection("usuarios").document(userId)
-                        .update("formulario", formulario, "formularioCompletado", true)
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(this, "Formulario guardado exitosamente.", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(PacienteActivity.this, ResultadoActivity.class);
-                            intent.putExtra("diagnostico", diagnostico);
-                            intent.putExtra("nombre", nombre);
-                            startActivity(intent);
-                            finish();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(this, "Error al guardar los datos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        });
+                    db.collection("usuarios").document(userId)
+                        .update(
+                            mapOf(
+                                "formulario" to formulario,
+                                "formularioCompletado" to true
+                            )
+                        )
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this,
+                                "Formulario guardado exitosamente.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val intent = Intent(this, ResultadoActivity::class.java)
+                            intent.putExtra("diagnostico", diagnostico)
+                            intent.putExtra("nombre", nombre)
+                            startActivity(intent)
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(
+                                this,
+                                "Error al guardar los datos: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                } else {
+                    Toast.makeText(this, "Error: Usuario no autenticado.", Toast.LENGTH_SHORT).show()
+                }
             }
-        });
+        }
 
         // Acción del botón Volver
-        btnVolverPaciente.setOnClickListener(v -> {
-            Intent intent = new Intent(PacienteActivity.this, BienvenidaActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        btnVolverPaciente.setOnClickListener {
+            val intent = Intent(this, BienvenidaActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }
